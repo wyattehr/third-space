@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Third Space</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="space-title">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Community note</p>
+            <h1 id="space-title">Third Space</h1>
+          </div>
+          <div class="status-pill" id="status">Connecting</div>
+        </header>
+
+        <label class="editor-label" for="shared-text">Shared text</label>
+        <textarea
+          id="shared-text"
+          class="shared-editor"
+          spellcheck="true"
+          placeholder="Start writing something your community can shape together."
+        ></textarea>
+
+        <footer class="workspace-footer">
+          <span id="last-updated">Not saved yet</span>
+          <span id="character-count">0 characters</span>
+        </footer>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
