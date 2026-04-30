@@ -8,6 +8,7 @@ const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, "public");
 const DATA_DIR = path.join(ROOT, "data");
 const SPACE_FILE = path.join(DATA_DIR, "space.json");
+const eventClients = new Set();
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -90,6 +91,13 @@ async function serveStatic(req, res) {
   }
 }
 
+function broadcastSpace(space) {
+  const payload = `data: ${JSON.stringify(space)}\n\n`;
+  for (const client of eventClients) {
+    client.write(payload);
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
@@ -106,7 +114,20 @@ const server = http.createServer(async (req, res) => {
       const space = { text, updatedAt: new Date().toISOString() };
 
       await writeSpace(space);
+      broadcastSpace(space);
       sendJson(res, 200, space);
+      return;
+    }
+
+    if (url.pathname === "/api/space/events" && req.method === "GET") {
+      res.writeHead(200, {
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive"
+      });
+      res.write("\n");
+      eventClients.add(res);
+      req.on("close", () => eventClients.delete(res));
       return;
     }
 
